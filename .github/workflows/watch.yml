@@ -1,11 +1,16 @@
 name: settok-watch
 on:
   schedule:
-    # 시간은 UTC. 한국시간 매일 16:00~23:59, 07:00~08:59 (평일 9~16시는 PC가 켜져 있음)
-    - cron: "*/10 7-14,22-23 * * *"
-    # 한국시간 토·일 09:00~15:59
-    - cron: "*/10 0-6 * * 0,6"
+    # 시간은 UTC (한국시간 = UTC+9). 평일 9~16시는 PC가 켜져 있어서 뺌
+    - cron: "*/5 7-14 * * 1-5"    # 평일 16:00~23:59
+    - cron: "*/5 22-23 * * 0-4"   # 평일 07:00~08:59
+    - cron: "*/5 15-23 * * 5"     # 토요일 00:00~08:59
+    - cron: "*/5 * * * 6"         # 토요일 09:00 ~ 일요일 08:59
+    - cron: "*/5 0-14 * * 0"      # 일요일 09:00~23:59
   workflow_dispatch:
+concurrency:
+  group: settok-watch
+  cancel-in-progress: false
 jobs:
   watch:
     runs-on: ubuntu-latest
